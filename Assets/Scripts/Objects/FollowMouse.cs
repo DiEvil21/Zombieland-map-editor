@@ -44,8 +44,9 @@ public class FollowMouse : MonoBehaviour
 
         string directoryPath = Path.GetDirectoryName(pngPath);
         string[] files = Directory.GetFiles(directoryPath);
-        
-        
+
+        // TODO: парсится каждый раз надо как-то по другому
+        // например создавать spriteVariants при создании объекта. т.е когда ЛКМ по иконке объекта
         foreach (string file in files)
         {
             if (Path.GetExtension(file).Equals(".meta", StringComparison.OrdinalIgnoreCase))

@@ -29,6 +29,7 @@ public class ObjectSpawner : MonoBehaviour
     public void SpawnObject()
     {
         // Создание пустого игрового объекта
+        // TODO: убрать путь к файлу из названия объекта, ничего не сломав
         GameObject newObj = new GameObject(nameObject);
         
 

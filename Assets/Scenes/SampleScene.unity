@@ -2930,7 +2930,7 @@ SpriteMask:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c1ff23faa8ead3d4ab55cff323a6be90, type: 3}
-  m_MaskAlphaCutoff: 0.2
+  m_MaskAlphaCutoff: 0.4
   m_FrontSortingLayerID: 0
   m_BackSortingLayerID: 0
   m_FrontSortingLayer: 0
@@ -12052,6 +12052,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7c8f6d9678eaf248a3fa46537ff6d5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FilePath: C:\Users\Di\Desktop\objects.proto
+  objectsProtoData:
+    MapName: 
+    objectProto: []
   map: {fileID: 400344468}
 --- !u!1 &1907316044
 GameObject:

@@ -4,13 +4,21 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 using System;
+using ProtoBuf;
+using Unity.VisualScripting;
 public class ObjectsSaver : MonoBehaviour
 {
+    public string FilePath;
+    public ObjectsProto objectsProtoData;
     public GameObject map;
     // Start is called before the first frame update
     void Start()
     {
         LoadObjectSettings();
+        if (!ProtoBuf.Meta.RuntimeTypeModel.Default.IsDefined(typeof(Vector2)))
+        {
+            ProtoBuf.Meta.RuntimeTypeModel.Default.Add(typeof(Vector2), false).Add("x", "y");
+        }
     }
 
     // Update is called once per frame
@@ -18,8 +26,41 @@ public class ObjectsSaver : MonoBehaviour
     {
         
     }
+    // TODO сделать загрузку карты из proto файла
+    public void SaveObjectsProto()
+    {
+        ObjectsProto objects = new ObjectsProto();
+        objects.objectProto = new ObjectProto[map.transform.childCount];
+        objects.MapName = "default";
+   
+        for (int i = 0; i < map.transform.childCount; i++) 
+        {
+            // получили бочку
+            Transform child = map.transform.GetChild(i);
+            Debug.Log("i: " + i + " child: " + child);
+            // сделали пустышку в objects.objectProto для настроек бочки
+            objects.objectProto[i] = new ObjectProto();
+            // записали пустышку в отдельное поле
+            ObjectProto currentObj = objects.objectProto[i];
+            Debug.Log("currentObj created");
+            // получили настройки бочки
+            ObjectSettings objSettings = child.gameObject.GetComponent<ObjectSettings>();
+            if (objSettings != null)
+            {
+                Debug.Log(objSettings.GetSpritePath());
+                currentObj.spritePath = objSettings.GetSpritePath();
+                currentObj.position = child.position;
+            }
+        }
 
-
+        
+        using (FileStream Stream = new FileStream(FilePath, FileMode.Create, FileAccess.Write))
+        {
+            Serializer.Serialize<ObjectsProto>(Stream, objects);
+            Stream.Flush();
+        }
+        objectsProtoData = Serializer.Deserialize<ObjectsProto>(new FileStream(FilePath, FileMode.Open, FileAccess.Read));
+    }
     public void SaveObjectSettings()
     {
         StringBuilder stringBuilder = new StringBuilder();
@@ -38,6 +79,18 @@ public class ObjectsSaver : MonoBehaviour
         }
         PlayerPrefs.SetString("ObjectSettings", stringBuilder.ToString());
         PlayerPrefs.Save();
+
+        //----------------------------------------------------------------
+        string filePath = "C:/Users/Di/Desktop/ObjectSettings.txt";
+
+        // Создаем или перезаписываем файл
+        using (StreamWriter writer = new StreamWriter(filePath, false))
+        {
+            writer.Write(stringBuilder.ToString());
+        }
+
+        Debug.Log("Данные сохранены в файл: " + filePath);
+        SaveObjectsProto();
     }
 
     // Load object settings from PlayerPrefs
